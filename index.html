@@ -22,6 +22,7 @@
                 queue: true
             },
             scene: {
+                preload: preload,
                 create: create,
                 update: update
             }
@@ -30,6 +31,17 @@
         var BKey;
 
         var game = new Phaser.Game(config);
+
+        function preload() {
+            this.load.image('sky', 'assets/sky.png');
+            this.load.image('ground', 'assets/platform.png');
+            this.load.image('star', 'assets/star.png');
+            this.load.image('bomb', 'assets/bomb.png');
+            this.load.spritesheet('butterfly',
+                'assets/butterfly.png',
+                { frameWidth: 50, frameHeight: 54 }
+            );
+        }
 
         function create() {
             var keyPressed;
@@ -40,6 +52,8 @@
                 keyPressed.setText(event.key);
             });
 
+            enemies = this.add.group();
+            enemies.create(20, 20, 'bomb')
         }
 
         function update() {}
