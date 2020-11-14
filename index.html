@@ -20,6 +20,9 @@
             type: Phaser.AUTO,
             width: 1200,
             height: 900,
+            physics: {
+                default: 'arcade',
+            },
             input: {
                 queue: true
             },
@@ -49,6 +52,8 @@
             var wordToType = 'dabomb';
             var text = this.add.text(0, 0, 'dummy', { fontsize: '16px', fill: '#FFFFFF' })
             var keyPressed;
+            enemies = this.add.group();
+            healthBars= [];
             keyPressed = this.add.text(16, 16, 'Press a key...', { fontSize: '32px', fill: '#FFFFFF' });
             //  Global event listener, catches all keys
             //  Receives every single key down event, regardless of type
@@ -60,12 +65,12 @@
                 if (isNextLetter(event.key, wordToType)) {
                     wordToType = wordToType.substr(1, wordToType.length);
                     text.setText(wordToType);
+                    removeHealth(healthBars);
                 }
             });
 
-            var enemies = this.add.group();
             createEnemies(enemies, 6, 1);
-            displayHealth(enemies, this);
+            displayHealth(enemies, this, healthBars);
 
             function createText(x, y, string) {
                 this.add.text(x, y, string, { fontsize: '16px', fill: '#FFFFFF' })
@@ -91,9 +96,18 @@
         }
 
         // Display the healthbars of all the enemies on the game.
-        function displayHealth(enemies, game) {
+        // Update the global healthbar objects
+        function displayHealth(enemies, game, healthBars) {
             enemies.children.iterate(function (enemy) {
-                game.add.text(enemy.x, enemy.y + 5, enemy.stringValue, { fontsize: '16px', fill: '#FFFFFF' });
+                // game.add.text(enemy.x, enemy.y + 5, enemy.stringValue, { fontsize: '16px', fill: '#FFFFFF' });
+                healthBars.push(game.add.text(enemy.x, enemy.y + 5, enemy.stringValue, { fontsize: '16px', fill: '#FFFFFF' }));
+            });
+        }
+
+        // remove all the given healthBars
+        function removeHealth(healthBars) {
+            healthBars.forEach(function (health) {
+                health.destroy();
             });
         }
     </script>
