@@ -53,35 +53,45 @@
             var text = this.add.text(0, 0, 'dummy', { fontsize: '16px', fill: '#FFFFFF' })
             var keyPressed;
             enemies = this.add.group();
-            healthBars= [];
+            healthBars = [];
             keyPressed = this.add.text(16, 16, 'Press a key...', { fontSize: '32px', fill: '#FFFFFF' });
             //  Global event listener, catches all keys
             //  Receives every single key down event, regardless of type
+            // TODO: Update healthbars on keypress
             this.input.keyboard.on('keydown', function (event) {
-                console.log(event.key);
-                keyPressed.setText(event.key);
-                console.log(isNextLetter(event.key, wordToType))
+
+                enemies.children.iterate(function (enemy) {
+                    if (isFirstLetter(event.key, enemy.stringValue)) {
+                        enemy.stringValue = enemy.stringValue.substr(1, enemy.stringValue.length);
+                        updateHealthBars();
+                        // removeHealth(healthBars);
+                        // displayHealth(enemies, this, healthBars)
+                    }
+                });
+
                 // Counting down letters and refreshing the text.
-                if (isNextLetter(event.key, wordToType)) {
-                    wordToType = wordToType.substr(1, wordToType.length);
-                    text.setText(wordToType);
-                    removeHealth(healthBars);
-                }
+                // if (isFirstLetter(event.key, wordToType)) {
+                //     wordToType = wordToType.substr(1, wordToType.length);
+                //     text.setText(wordToType);
+                //     removeHealth(healthBars);
+                // }
             });
 
             createEnemies(enemies, 6, 1);
             displayHealth(enemies, this, healthBars);
+            function updateHealthBars() {
+                console.log('updating healthbars...');
+                removeHealth(healthBars);
+                displayHealth(enemies, this, healthBars);
 
-            function createText(x, y, string) {
-                this.add.text(x, y, string, { fontsize: '16px', fill: '#FFFFFF' })
-            }
-
-            function isNextLetter(letter, word) {
-                return letter === word.substr(0,1);
             }
         }
 
         function update() { }
+
+        function isFirstLetter(letter, word) {
+            return letter === word.substr(0, 1);
+        }
 
         // Create <quantity> number of enemies with a random <health> length string value.
         function createEnemies(enemies, quantity, health) {
@@ -91,7 +101,7 @@
             }
 
             enemies.children.iterate(function (enemy) {
-                enemy.stringValue = 'dummy'
+                enemy.stringValue = randomString(5);
             })
         }
 
@@ -109,6 +119,18 @@
             healthBars.forEach(function (health) {
                 health.destroy();
             });
+        }
+
+        // Return a random sequence of strings of <length> in length.
+        function randomString(length) {
+            // All characters
+            var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var string = '';
+            for (var i = 0; i < length; i++) {
+                string += chars.charAt(Phaser.Math.Between(0, chars.length))
+            }
+
+            return string;
         }
     </script>
 
