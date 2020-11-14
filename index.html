@@ -18,6 +18,8 @@
 
         var config = {
             type: Phaser.AUTO,
+            width: 1200,
+            height: 900,
             input: {
                 queue: true
             },
@@ -61,16 +63,9 @@
                 }
             });
 
-            var enemies;
-            enemies = this.add.group();
-            enemies.create(20, 20, 'bomb')
-            enemies.children.iterate(function (child) {
-                // Creating text per child.
-                // Need to find out a way to connect the two better.
-                child.stringValue = wordToType;
-                text.setText(wordToType);
-                // createText(child.x + 20, child.y + 20, child.stringValue);
-            });
+            var enemies = this.add.group();
+            createEnemies(enemies, 6, 1);
+            displayHealth(enemies, this);
 
             function createText(x, y, string) {
                 this.add.text(x, y, string, { fontsize: '16px', fill: '#FFFFFF' })
@@ -82,6 +77,25 @@
         }
 
         function update() { }
+
+        // Create <quantity> number of enemies with a random <health> length string value.
+        function createEnemies(enemies, quantity, health) {
+            var i;
+            for (i = 0; i < quantity; i++) {
+                enemies.create(Phaser.Math.Between(0, config.width), Phaser.Math.Between(0, config.height), 'bomb');
+            }
+
+            enemies.children.iterate(function (enemy) {
+                enemy.stringValue = 'dummy'
+            })
+        }
+
+        // Display the healthbars of all the enemies on the game.
+        function displayHealth(enemies, game) {
+            enemies.children.iterate(function (enemy) {
+                game.add.text(enemy.x, enemy.y + 5, enemy.stringValue, { fontsize: '16px', fill: '#FFFFFF' });
+            });
+        }
     </script>
 
 </body>
