@@ -33,8 +33,6 @@
             }
         };
 
-        var BKey;
-
         var game = new Phaser.Game(config);
 
         function preload() {
@@ -60,10 +58,11 @@
             // TODO: Update healthbars on keypress
             this.input.keyboard.on('keydown', function (event) {
 
+                console.log(event.key);
                 enemies.children.iterate(function (enemy) {
                     if (isFirstLetter(event.key, enemy.stringValue)) {
                         enemy.stringValue = enemy.stringValue.substr(1, enemy.stringValue.length);
-                        updateHealthBars();
+                        updateHealthBars(enemy);
                         // removeHealth(healthBars);
                         // displayHealth(enemies, this, healthBars)
                     }
@@ -79,8 +78,9 @@
 
             createEnemies(enemies, 6, 1);
             displayHealth(enemies, this, healthBars);
-            function updateHealthBars() {
+            function updateHealthBars(enemy) {
                 console.log('updating healthbars...');
+                enemy.stringValue = enemy.stringValue.substr(1, enemy.stringValue.length);
                 removeHealth(healthBars);
                 displayHealth(enemies, this, healthBars);
 
@@ -119,6 +119,7 @@
             healthBars.forEach(function (health) {
                 health.destroy();
             });
+            healthBars = [];
         }
 
         // Return a random sequence of strings of <length> in length.
