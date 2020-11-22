@@ -80,8 +80,8 @@
         function disableEnemyAndHealthbar(enemy, healthBars, enemyIndex) {
             var updatedHealth = enemy.stringValue.substr(1, enemy.stringValue.length);
             if (updatedHealth.length === 0) {
-                healthBars[enemyIndex].destroy();
-                healthBars.splice(enemyIndex, 1);
+                healthBars[enemyIndex].enable = false;
+                healthBars[enemyIndex].setVisible(false);
                 enemy.enable = false;
                 enemy.setVisible(false);
                 return enemyIndex;
@@ -92,11 +92,18 @@
             }
         }
 
+        function setEnemyMovement(enemies, velocity, game) {
+            enemies.children.iterate(function (enemy) {
+                console.log(enemy);
+                // game.physics.arcade.velocityFromAngle(90, 300, enemy.body.velocity)
+            });
+        }
+
         // Create <quantity> number of enemies with a random <health> length string value.
         function createEnemies(enemies, quantity, health) {
             var i;
             for (i = 0; i < quantity; i++) {
-                enemies.create(Phaser.Math.Between(0, config.width), Phaser.Math.Between(0, config.height), 'bomb');
+                enemies.create(Phaser.Math.Between(0, config.width-100), Phaser.Math.Between(0, config.height - 100), 'bomb');
             }
 
             enemies.children.iterate(function (enemy) {
