@@ -48,49 +48,56 @@
 
         function create() {
             var wordToType = 'dabomb';
-            var text = this.add.text(0, 0, 'dummy', { fontsize: '16px', fill: '#FFFFFF' })
             var keyPressed;
             enemies = this.add.group();
+            // All the healthbars. Each one is indexed to match an enemy. So enemy[0] will have healthBars[0]
             healthBars = [];
-            keyPressed = this.add.text(16, 16, 'Press a key...', { fontSize: '32px', fill: '#FFFFFF' });
             //  Global event listener, catches all keys
             //  Receives every single key down event, regardless of type
             // TODO: Update healthbars on keypress
+            var enemyToDelete = -1;
             this.input.keyboard.on('keydown', function (event) {
 
-                console.log(event.key);
+                var enemyIndex = 0;
                 enemies.children.iterate(function (enemy) {
                     if (isFirstLetter(event.key, enemy.stringValue)) {
-                        enemy.stringValue = enemy.stringValue.substr(1, enemy.stringValue.length);
-                        updateHealthBars(enemy);
-                        // removeHealth(healthBars);
-                        // displayHealth(enemies, this, healthBars)
+                        enemyToDelete = updateEnemyHealthbar(enemy, healthBars, enemyIndex);
                     }
+                    enemyIndex++;
                 });
-
-                // Counting down letters and refreshing the text.
-                // if (isFirstLetter(event.key, wordToType)) {
-                //     wordToType = wordToType.substr(1, wordToType.length);
-                //     text.setText(wordToType);
-                //     removeHealth(healthBars);
-                // }
+                if (enemyToDelete >= 0) {
+                    // Split the enemy out of the list.
+                    // I don't think there is any need for this. Disabling them should be enough.
+                    // Then when we reset the level, we just clear the enemies list and generate a new one.
+                    console.log('Deleting an enemy');
+                    console.log(enemyToDelete);
+                    enemies.children.entries.splice(enemyToDelete, 1);
+                }
             });
 
             createEnemies(enemies, 6, 1);
-            displayHealth(enemies, this, healthBars);
-            function updateHealthBars(enemy) {
-                console.log('updating healthbars...');
-                enemy.stringValue = enemy.stringValue.substr(1, enemy.stringValue.length);
-                removeHealth(healthBars);
-                displayHealth(enemies, this, healthBars);
-
-            }
+            initializeHealth(enemies, this, healthBars);
         }
 
         function update() { }
 
         function isFirstLetter(letter, word) {
             return letter === word.substr(0, 1);
+        }
+
+        function updateEnemyHealthbar(enemy, healthBars, enemyIndex) {
+            var updatedHealth = enemy.stringValue.substr(1, enemy.stringValue.length);
+            if (updatedHealth.length === 0) {
+                healthBars[enemyIndex].destroy();
+                healthBars.splice(enemyIndex, 1);
+                //TODO: Disable/kill the enemy
+                enemy.disable();
+                return enemyIndex;
+            } else {
+                enemy.stringValue = updatedHealth;
+                healthBars[enemyIndex].setText(enemy.stringValue);
+                return -1;
+            }
         }
 
         // Create <quantity> number of enemies with a random <health> length string value.
@@ -106,10 +113,8 @@
         }
 
         // Display the healthbars of all the enemies on the game.
-        // Update the global healthbar objects
-        function displayHealth(enemies, game, healthBars) {
+        function initializeHealth(enemies, game, healthBars) {
             enemies.children.iterate(function (enemy) {
-                // game.add.text(enemy.x, enemy.y + 5, enemy.stringValue, { fontsize: '16px', fill: '#FFFFFF' });
                 healthBars.push(game.add.text(enemy.x, enemy.y + 5, enemy.stringValue, { fontsize: '16px', fill: '#FFFFFF' }));
             });
         }
