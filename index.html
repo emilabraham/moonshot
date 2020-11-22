@@ -54,25 +54,16 @@
             healthBars = [];
             //  Global event listener, catches all keys
             //  Receives every single key down event, regardless of type
-            // TODO: Update healthbars on keypress
             var enemyToDelete = -1;
             this.input.keyboard.on('keydown', function (event) {
 
                 var enemyIndex = 0;
                 enemies.children.iterate(function (enemy) {
                     if (isFirstLetter(event.key, enemy.stringValue)) {
-                        enemyToDelete = updateEnemyHealthbar(enemy, healthBars, enemyIndex);
+                        disableEnemyAndHealthbar(enemy, healthBars, enemyIndex);
                     }
                     enemyIndex++;
                 });
-                if (enemyToDelete >= 0) {
-                    // Split the enemy out of the list.
-                    // I don't think there is any need for this. Disabling them should be enough.
-                    // Then when we reset the level, we just clear the enemies list and generate a new one.
-                    console.log('Deleting an enemy');
-                    console.log(enemyToDelete);
-                    enemies.children.entries.splice(enemyToDelete, 1);
-                }
             });
 
             createEnemies(enemies, 6, 1);
@@ -85,13 +76,14 @@
             return letter === word.substr(0, 1);
         }
 
-        function updateEnemyHealthbar(enemy, healthBars, enemyIndex) {
+        // Also returns index of the enemy we need to delete
+        function disableEnemyAndHealthbar(enemy, healthBars, enemyIndex) {
             var updatedHealth = enemy.stringValue.substr(1, enemy.stringValue.length);
             if (updatedHealth.length === 0) {
                 healthBars[enemyIndex].destroy();
                 healthBars.splice(enemyIndex, 1);
-                //TODO: Disable/kill the enemy
-                enemy.disable();
+                enemy.enable = false;
+                enemy.setVisible(false);
                 return enemyIndex;
             } else {
                 enemy.stringValue = updatedHealth;
