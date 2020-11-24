@@ -47,9 +47,9 @@
         }
 
         function create() {
-            var wordToType = 'dabomb';
             var keyPressed;
-            enemies = this.add.group();
+            var speed = .1;
+            enemies = this.physics.add.group();
             enemies.enableBody = true;
             enemies.physicsBodyType = Phaser.Physics.ARCADE;
             // All the healthbars. Each one is indexed to match an enemy. So enemy[0] will have healthBars[0]
@@ -70,7 +70,8 @@
 
             createEnemies(enemies, 6, 1);
             initializeHealth(enemies, this, healthBars);
-            setEnemyMovement(enemies, 300);
+            //TODO Get the text to move
+            setEnemyMovement(enemies, healthBars, speed);
         }
 
         function update() { }
@@ -95,12 +96,20 @@
             }
         }
 
-        function setEnemyMovement(enemies, velocity) {
+        function setEnemyMovement(enemies, healthBars, speed) {
             enemies.children.iterate(function (enemy) {
-                console.log(enemy);
-                enemy.body.velocity.y = -100;
-                // game.physics.arcade.velocityFromAngle(90, 300, enemy.body.velocity)
+                setVelocityToCenter(enemy, speed);
             });
+            console.log(healthBars);
+        }
+
+        function setVelocityToCenter(enemy, speed) {
+            var centerX = 600;
+            var centerY = 450;
+            var rawXVelocity = centerY - enemy.y;
+            var rawYVelocity = centerX - enemy.x;
+            enemy.body.velocity.y = rawXVelocity * speed;
+            enemy.body.velocity.x = rawYVelocity * speed;
         }
 
         // Create <quantity> number of enemies with a random <health> length string value.
