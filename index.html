@@ -50,6 +50,8 @@
             var wordToType = 'dabomb';
             var keyPressed;
             enemies = this.add.group();
+            enemies.enableBody = true;
+            enemies.physicsBodyType = Phaser.Physics.ARCADE;
             // All the healthbars. Each one is indexed to match an enemy. So enemy[0] will have healthBars[0]
             healthBars = [];
             //  Global event listener, catches all keys
@@ -68,6 +70,7 @@
 
             createEnemies(enemies, 6, 1);
             initializeHealth(enemies, this, healthBars);
+            setEnemyMovement(enemies, 300);
         }
 
         function update() { }
@@ -92,9 +95,10 @@
             }
         }
 
-        function setEnemyMovement(enemies, velocity, game) {
+        function setEnemyMovement(enemies, velocity) {
             enemies.children.iterate(function (enemy) {
                 console.log(enemy);
+                enemy.body.velocity.y = -100;
                 // game.physics.arcade.velocityFromAngle(90, 300, enemy.body.velocity)
             });
         }
@@ -103,7 +107,7 @@
         function createEnemies(enemies, quantity, health) {
             var i;
             for (i = 0; i < quantity; i++) {
-                enemies.create(Phaser.Math.Between(0, config.width-100), Phaser.Math.Between(0, config.height - 100), 'bomb');
+                enemies.create(Phaser.Math.Between(0, config.width - 100), Phaser.Math.Between(0, config.height - 100), 'bomb');
             }
 
             enemies.children.iterate(function (enemy) {
