@@ -46,6 +46,7 @@
             );
         }
 
+        // MAIN GAME FUNCTIONS
         function create() {
             var keyPressed;
             var speed = .1;
@@ -74,7 +75,20 @@
             setEnemyMovement(enemies, healthBars, speed);
         }
 
-        function update() { }
+        function update() {
+            updateHealthbarPositions(enemies, healthBars);
+        }
+
+        // HELPER FUNCTIONS
+
+        //Updates the position of the healthbars to be connected with the enemies
+        function updateHealthbarPositions(enemies, healthBars) {
+            var enemiesArray = enemies.children.entries;
+            for(var index = 0; index < enemiesArray.length; index++) {
+                healthBars[index].x = enemiesArray[index].x - 20;
+                healthBars[index].y = enemiesArray[index].y + 5
+            }
+        }
 
         function isFirstLetter(letter, word) {
             return letter === word.substr(0, 1);
@@ -100,7 +114,6 @@
             enemies.children.iterate(function (enemy) {
                 setVelocityToCenter(enemy, speed);
             });
-            console.log(healthBars);
         }
 
         function setVelocityToCenter(enemy, speed) {
