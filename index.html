@@ -36,18 +36,18 @@
         var game = new Phaser.Game(config);
 
         function preload() {
-            this.load.image('sky', 'assets/sky.png');
-            this.load.image('ground', 'assets/platform.png');
-            this.load.image('star', 'assets/star.png');
             this.load.image('bomb', 'assets/bomb.png');
-            this.load.spritesheet('butterfly',
-                'assets/butterfly.png',
-                { frameWidth: 50, frameHeight: 54 }
+            this.load.spritesheet('moon',
+                'assets/moon.png',
+                { frameWidth: 80, frameHeight: 80 }
             );
         }
 
         // MAIN GAME FUNCTIONS
         function create() {
+            // TODO: Add some animation
+            // TODO: Add some collision
+            moon = this.physics.add.sprite(600, 450, 'moon');
             var keyPressed;
             var speed = .1;
             enemies = this.physics.add.group();
@@ -84,7 +84,7 @@
         //Updates the position of the healthbars to be connected with the enemies
         function updateHealthbarPositions(enemies, healthBars) {
             var enemiesArray = enemies.children.entries;
-            for(var index = 0; index < enemiesArray.length; index++) {
+            for (var index = 0; index < enemiesArray.length; index++) {
                 healthBars[index].x = enemiesArray[index].x - 20;
                 healthBars[index].y = enemiesArray[index].y + 5
             }
